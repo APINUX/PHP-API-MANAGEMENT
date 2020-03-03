@@ -26,19 +26,38 @@ $_db = new Medoo([
 $_path = array_values(array_filter(explode("/",explode("?",$_SERVER['REQUEST_URI'])[0])));
 $_jml = count($_path);
 
-if(isset($_path[0]) && $_path[0]=='admin'){
+$_admin = 'admin';
+
+if(isset($_path[0]) && $_path[0]==$_admin){
     $tpl = new League\Plates\Engine('template');
-    if(file_exists($modul = "modul/".$_path[1]."/".$_path[2].".php")){
+    //All Methods
+    $tpl->addData(['_methods' => ['GET','POST','PUT','DELETE','PATCH']]);
+    $tpl->addData(['_types' => ['http','sql','php','plain','echo']]);
+
+    //foo/bar.php
+    if(file_exists($modul = "modules/".$_path[1]."/".$_path[2].".php")){
+            $tpl->addData(['crumbs' => [$_path[0],$_path[1],$_path[2]]]);
             unset($_path[0],$_path[1],$_path[2]);
             $_path = array_values($_path);
             include $modul;
-    }else if(file_exists($modul = "modul/".$_path[1].".php")){
+    //foo/foo.php
+    }else if(file_exists($modul = "modules/".$_path[1]."/".$_path[1].".php")){
+            $tpl->addData(['crumbs' => [$_path[0],$_path[1]]]);
             unset($_path[0],$_path[1]);
             $_path = array_values($_path);
             include $modul;
             die();
-    }else
-        include "modul/home.php";
+    //foo.php
+    }else if(file_exists($modul = "modules/".$_path[1].".php")){
+        $tpl->addData(['crumbs' => [$_path[0],$_path[1]]]);
+        unset($_path[0],$_path[1]);
+        $_path = array_values($_path);
+        include $modul;
+        die();
+    }else{
+        $tpl->addData(['crumbs' => [$_path[0]]]);
+        include "modules/home.php";
+    }
 }else{
     if(isset($_path[0],$_path[1],$_path[2])){
         $route = $_db->get('api_routes',

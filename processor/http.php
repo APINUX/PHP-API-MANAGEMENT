@@ -107,9 +107,11 @@ function initCurl($url) {
 }
 
 /**
- * Return all header to client
+ * Return some header to client
  */
 function handleHeaderLine( $curl, $header_line ) {
-    //header($header_line);
+    //if redirect, we tell them
+    if(strpos('location',$header_line)!==false)
+        header($header_line);
     return strlen($header_line);
 }
