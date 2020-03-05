@@ -29,5 +29,5 @@ foreach($_POST as $k => $v){
 }
 
 $result = $db->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-header('Content-Type: '.$route['content_type']);
-sendResult($result);
+
+sendResult($result,'Content-Type: '.$route['content_type']);

@@ -44,6 +44,15 @@ default:
 header('Content-Type: '.$route['content_type']);
 
 echo $response;
+
+//remove every upload files
+if(isset($_FILES) && count($_FILES)>0){
+    foreach($_FILES as $k => $v){
+        if (file_exists($v['tmp_name'])){
+            unlink($v['tmp_name']);
+        }
+    }
+}
 die();
 
 

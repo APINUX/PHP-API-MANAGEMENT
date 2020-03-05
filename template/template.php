@@ -39,7 +39,7 @@
                     $modules = scandir("./modules/");
                     foreach($modules as $module){
                     if(is_dir("./modules/".$module) && !in_array($module,['.','..'])){?>
-                    <li class="nav-item">
+                    <li class="nav-item <?=($crumbs[1]==$module)? 'active':''?>">
                     <a href="/<?=$crumbs[0]?>/<?=$module?>/" class="nav-link<?php
                     if($_path[0]==$module) echo ' active';
                     ?>"><?=ucwords($module)?></a>
@@ -56,7 +56,7 @@
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <div class="content-header">
-            <div class="container">
+            <div class="container<?=$_fluid?>">
             <div class="row mb-2">
                 <div class="col-sm-6">
                     <h1 class="m-0 text-dark"> <?=$this->e($title)?></h1>
@@ -83,7 +83,7 @@
         <!-- /.content-header -->
         <!-- Main content -->
         <div class="content">
-            <div class="container">
+            <div class="container<?=$_fluid?>">
                 <?=$this->section('content')?>
             </div><!-- /.container-fluid -->
         </div>

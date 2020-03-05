@@ -1,86 +1,111 @@
-<?php $this->layout('template', ['title' => 'Routes List']); ?>
+<?php $this->layout('template', ['title' => 'View Route','footerScript'=>""]); ?>
 
-<div class="row">
-    <div class="col-md-2">
-        <div class="card">
-            <div class="card-body">
-                <a href="/admin/routes/add" class="btn btn-primary btn-block">Add New Route</a>
-                <hr>
-                <form class="form" method="post">
-                    <input type="text" class="form-control" name="search" value="<?=$search?>"; placeholder="Search">
-                    <select name="version" class="form-control">
-                        <option value='0' selected>All Version</option>
-                        <?php foreach($versions as $ver){
-                            if($version==$ver['version'])
-                            echo '<option value="'.$ver['version'].'" selected>'.$ver['version'].'</option>';
-                            else
-                            echo '<option value="'.$ver['version'].'">'.$ver['version'].'</option>';
-                        }?>
-                    </select>
-                    <select name="environment" class="form-control" id="inlineFormCustomSelect">
-                        <option value='all' selected>All Environment</option>
-                        <option value="development" <?php if($environment=='development')echo 'selected';?>>Development</option>
-                        <option value="staging" <?php if($environment=='staging')echo 'selected';?>>Staging</option>
-                        <option value="production" <?php if($environment=='production')echo 'selected';?>>Production</option>
-                    </select>
-                    <hr>
-                    <button type="submit" class="btn btn-info btn-block">show</button>
-                </form>
-            </div>
-        </div>
+<?php if(!empty($msg)){ showAlert($msg, $msgType); }?>
+
+<form class="form" method="post">
+<div class="card">
+    <div class="card-body">
+        <h4><?=$data['name']?></h4>
+        <p><?=$data['description']?></p>
     </div>
-    <div class="col-md-10">
-        <div class="card">
-            <div class="table-responsive">
-            <table class="table table-bordered table-striped table-hover table-sm">
-                <thead>
-                    <tr class="table-secondary">
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>Method</th>
-                        <th>Version/Category/Function</th>
-                        <th>Env</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach($routes as $route){ ?>
-                    <tr class="table-<?php if($route['enabled']==1){ if($route['environment']=='production') echo 'success'; 
-                                else if($route['environment']=='staging') echo 'primary'; 
-                                else if($route['environment']=='development') echo 'info';
-                                }else echo 'danger'; ?>">
-                        <td><a href="/admin/routes/view/<?=$route['id']?>"><?=$route['name']?></a></td>
-                        <td><?=$route['route_type']?></td>
-                        <td><?php foreach(explode(',',$route['methods']) as $method){
-                            echo '<span class="badge badge-secondary">'.$method.'</span>&nbsp;';
-                        }?></td>
-                        <td>/<?= implode('/',array_values([$route['version'],$route['category'],$route['function']])) ?></td>
-                        <td><?=substr($route['environment'],0,3)?></td>
-                        <td><a href="/admin/routes/edit" class="btn btn-info btn-block btn-xs">Edit</a></td>
-                    </tr>
-                    <?php } ?>
-                </tbody>
-            </table>
+</div>
+<div class="card bg-<?php if($data['enabled']==1){ if($data['environment']=='production') echo 'success'; 
+        else if($data['environment']=='staging') echo 'primary'; 
+        else if($data['environment']=='development') echo 'info';
+        }else echo 'danger'; ?>">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Group</label>
+                    <h4><?=$data['group_name']?></h4>
+                </div>
             </div>
-            <div class="card-footer">
-                <table class="float-left"><tr>
-                    <td class="table-success">&nbsp;Prod&nbsp;</td>
-                    <td class="table-primary">&nbsp;Stag&nbsp;</td>
-                    <td class="table-info">&nbsp;Dev&nbsp;</td>
-                    <td class="table-danger">&nbsp;Off&nbsp;</td>
-                </tr></table>
-                <form class="form" method="post">
-                    <input type="hidden" name="search" value="<?=$search?>">
-                    <input type="hidden" name="version" value="<?=$version?>">
-                    <input type="hidden" name="environment" value="<?=$environment?>">
-                <ul class="pagination pagination-sm m-0 float-right">
-                    <li class="page-item <?php if($page<1) echo'disabled' ?>"><button type="submit" name="p" value="<?=$page-1?>" class="page-link">Prev</button></li>
-                    <li class="page-item disabled"><a href="#" class="page-link"><?=$count?>-<?=$total?></a></li>
-                    <li class="page-item <?php if(count($routes)<$max) echo'disabled' ?>"><button type="submit" name="p" value="<?=$page+1?>" class="page-link">Next</button></li>
-                </ul>
-                </form>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Environment</label>
+                    <h4><?=$data['environment']?></h4>
+                    </select>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+<div class="card">
+    <div class="card-body">
+        <h4>
+            <?php foreach(explode(',',$data['methods']) as $method){
+                echo '<span class="badge badge-secondary">'.$method.'</span>&nbsp;';
+            }?>
+            <?=$_SERVER['HTTP_HOST']?>/<?php if($data['environment']=='staging') echo 'sta';
+                                else if($data['environment']=='development') echo 'dev'; ?>/<?= implode('/',array_filter([$data['version'],$data['category'],$data['function']])) ?>
+        </h4>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-2">
+                <label>Tipe</label>
+                <h4><?=$data['route_type']?></h4>
+            </div>
+            <div class="col-md-2">
+                <label>Database</label>
+                <h4><?=$data['db_name']?></h4>
+            </div>
+            <div class="col-md-2">
+                <label>Retry</label>
+                <h4><?=$data['retry']?></h4>
+            </div>
+            <div class="col-md-2">
+                <label>Retry Delay</label>
+                <h4><?=$data['retry_delay']?></h4>
+            </div>
+            <div class="col-md-2">
+                <label>Timeout</label>
+                <h4><?=$data['timeout']?></h4>
+            </div>
+            <div class="col-md-2">
+                <label>Enabled</label>
+                <p>
+                <?php if($data['enabled']){ ?>
+                <a href="?off" onclick="return confirm('Disable?')" class="btn btn-success btn-block text-white" role="button">ON</a>
+                <?php }else{ ?>
+                <a href="?on" onclick="return confirm('Enable?')" class="btn btn-danger btn-block text-white" role="button">OFF</a>
+                <?php } ?></p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label>Content Type</label>
+                    <h4><?=$data['content_type']?></h4>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Auth Validation</label>
+                    <h4><?=$data['auth_name']?></h4>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <div class="form-group">
+            <label>Content</label>
+            <p><?=htmlspecialchars($data['content'])?></p>
+        </div>
+    </div>
+    <hr>
+    <div class="card-footer">
+        <div class="btn-group btn-block btn-group-justified" role="group">
+            <a href="/admin/routes/edit/<?=$data['id']?>" class="btn btn-info">&nbsp;&nbsp;&nbsp;Edit&nbsp;&nbsp;&nbsp;</a>
+            <a href="/admin/routes/clone/<?=$data['id']?>" onclick="return confirm('Clone <?=$route['name']?> Route')" class="btn btn-success">clone</a>
+        </div>
+    </div>
+</div>
+</form>

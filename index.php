@@ -22,8 +22,8 @@ $_db = new Medoo([
     'password' => $db_pass
 ]);
 
-
-$_path = array_values(array_filter(explode("/",explode("?",$_SERVER['REQUEST_URI'])[0])));
+//Parsing URL
+$_path = array_values(array_filter(explode("/",parse_url($_SERVER['REQUEST_URI'])['path'])));
 $_jml = count($_path);
 
 $_admin = 'admin';
@@ -33,23 +33,24 @@ if(isset($_path[0]) && $_path[0]==$_admin){
     //All Methods
     $tpl->addData(['_methods' => ['GET','POST','PUT','DELETE','PATCH']]);
     $tpl->addData(['_types' => ['http','sql','php','plain','echo']]);
+    $tpl->addData(['_env' => ['development','staging','production']]);
 
     //foo/bar.php
     if(file_exists($modul = "modules/".$_path[1]."/".$_path[2].".php")){
-            $tpl->addData(['crumbs' => [$_path[0],$_path[1],$_path[2]]]);
+            $tpl->addData(['crumbs' => $crumbs=[$_path[0],$_path[1],$_path[2]]]);
             unset($_path[0],$_path[1],$_path[2]);
             $_path = array_values($_path);
             include $modul;
     //foo/foo.php
     }else if(file_exists($modul = "modules/".$_path[1]."/".$_path[1].".php")){
-            $tpl->addData(['crumbs' => [$_path[0],$_path[1]]]);
+            $tpl->addData(['crumbs' => $crumbs=[$_path[0],$_path[1]]]);
             unset($_path[0],$_path[1]);
             $_path = array_values($_path);
             include $modul;
             die();
     //foo.php
     }else if(file_exists($modul = "modules/".$_path[1].".php")){
-        $tpl->addData(['crumbs' => [$_path[0],$_path[1]]]);
+        $tpl->addData(['crumbs' => $crumbs=[$_path[0],$_path[1]]]);
         unset($_path[0],$_path[1]);
         $_path = array_values($_path);
         include $modul;
@@ -59,15 +60,25 @@ if(isset($_path[0]) && $_path[0]==$_admin){
         include "modules/home.php";
     }
 }else{
+    $env = 'production';
+    if($_path[0]=='dev'){
+        unset($_path[0]);
+        $_path = array_values($_path);
+        $env = 'development';
+    }else if($_path[0]=='sta'){
+        unset($_path[0]);
+        $_path = array_values($_path);
+        $env = 'staging';
+    }
     if(isset($_path[0],$_path[1],$_path[2])){
-        $route = $_db->get('api_routes',
+        $routes = $_db->select('api_routes',
                 ['id','methods', 'route_type', 'content_type', 'db_id', 'content', 'retry', 'retry_delay', 'timeout'],
-                ['AND'=>['version'=>$_path[0], 'category'=>$_path[1], 'function'=>$_path[2],'enabled'=>1]]
+                ['AND'=>['version'=>$_path[0], 'category'=>$_path[1], 'function'=>$_path[2],'environment'=>$env,'enabled'=>1]]
             );
-        if(!isset($route) || !is_array($route) || count($route)==0){
-            $route = $_db->debug()->get('api_routes',
+        if(!isset($routes) || !is_array($routes) || count($routes)==0){
+            $routes = $_db->select('api_routes',
                 ['id','methods', 'route_type', 'content_type', 'db_id', 'content', 'retry', 'retry_delay', 'timeout'],
-                ['AND'=>['version'=>$_path[0], 'category'=>$_path[1],'enabled'=>1]]
+                ['AND'=>['version'=>$_path[0], 'category'=>$_path[1],'environment'=>$env,'enabled'=>1]]
             );
             unset($_path[0],$_path[1]);
             $_path = array_values($_path);
@@ -76,21 +87,25 @@ if(isset($_path[0]) && $_path[0]==$_admin){
             $_path = array_values($_path);
         }
     }else if(isset($_path[0],$_path[1])){
-        $route = $_db->get('api_routes',
+        $routes = $_db->select('api_routes',
                 ['id','methods', 'route_type', 'content_type', 'db_id', 'content', 'retry', 'retry_delay', 'timeout'],
-                ['AND'=>['version'=>$_path[0], 'category'=>$_path[1],'enabled'=>1]]
+                ['AND'=>['version'=>$_path[0], 'category'=>$_path[1],'environment'=>$env,'enabled'=>1]]
             );
         unset($_path[0],$_path[1]);
         $_path = array_values($_path);
     }
 
-    if(!isset($route) || !is_array($route) || count($route)==0){
+    if(!isset($routes) || !is_array($routes) || count($routes)==0){
         sendError('no Route matched ');
     }
 
-    //CHECK METHOD
-    if(strpos($route['methods'],$_SERVER["REQUEST_METHOD"])===false){
-        sendError("Method Not Allowed",'HTTP/1.0 405 Method Not Allowed');
+    foreach($routes as $route){
+        //CHECK METHOD
+        if(strpos($route['methods'],$_SERVER["REQUEST_METHOD"])===false){
+            sendError("Method Not Allowed",['HTTP/1.0 405 Method Not Allowed',"Content-Type: Application/json"]);
+        }else{
+            break;
+        }
     }
 
     //recount
@@ -98,6 +113,8 @@ if(isset($_path[0]) && $_path[0]==$_admin){
 
     //analytics
     analytics($route['id']);
+
+    //TODO Check AUTH
 
     //find processor based route type
     if(file_exists('processor/'.$route['route_type'].'.php')){
