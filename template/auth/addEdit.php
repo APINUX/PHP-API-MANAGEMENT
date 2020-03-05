@@ -10,16 +10,16 @@
             <div class="card-body">
                 <div class="form-group">
                     <label>Name</label>
-                    <input type="text" name="name" id="name" class="form-control" placeholder="name" value="<?=$data['name']?>">
+                    <input type="text" name="name" required id="name" class="form-control" placeholder="name" value="<?=$data['name']?>">
                 </div>
                 <div class="form-group">
                     <label>JWT Secret</label>
-                    <input type="text" name="jwt_secret" id="jwt_secret" class="form-control" placeholder="JWT Secret" value="<?=$data['jwt_secret']?>">
+                    <input type="text" name="jwt_secret" required id="jwt_secret" class="form-control" placeholder="JWT Secret" value="<?=$data['jwt_secret']?>">
                 </div>
                 <div class="form-group">
                     <label>Expired</label>
                     <div class="input-group mb-3">
-                        <input type="number" name="expired" id="expired" class="form-control" placeholder="expired" value="<?=$data['expired']?>">
+                        <input type="number" name="expired" required id="expired" class="form-control" placeholder="expired" value="<?=$data['expired']?>">
                         <div class="input-group-append">
                             <span class="input-group-text" id="basic-addon2">hour(s)</span>
                         </div>
@@ -27,7 +27,7 @@
                 </div>
                 <div class="form-group">
                     <label>Header Name</label>
-                    <input type="text" name="header" id="header" class="form-control" placeholder="X-AUTH" value="<?=$data['header']?>">
+                    <input type="text" name="header" required id="header" class="form-control" placeholder="X-AUTH" value="<?=$data['header']?>">
                     <small class="form-text text-muted">By default, for every http request type, headers will be sent to another API</small>
                 </div>
             </div>

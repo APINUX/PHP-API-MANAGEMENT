@@ -5,9 +5,10 @@
  * ignoring 'method', 'retry', 'retry_delay', 'timeout'
  */
 
-header('Content-Type: '.$route['content_type']);
+header('Content-Type: application/json');
 
 echo json_encode([
+    'HEADER'=>getallheaders(),
     'GET'=>$_GET,
     'POST'=>$_POST,
     'FILES'=>$_FILES

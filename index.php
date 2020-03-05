@@ -2,7 +2,7 @@
 /**
  * API MANAGEMENT Created by Ibnu Maksum
  */
-
+use \Firebase\JWT\JWT;
 header('Access-Control-Allow-Origin: *');
 date_default_timezone_set("Asia/Jakarta");
 error_reporting(E_ERROR);
@@ -77,14 +77,15 @@ if(isset($_path[0]) && $_path[0]==$_admin){
         $_path = array_values($_path);
         $env = 'staging';
     }
+
+    $fields = ['id', 'methods', 'route_type', 'content_type', 'db_id', 'auth_id', 'content', 'retry', 'retry_delay', 'timeout'];
+
     if(isset($_path[0],$_path[1],$_path[2])){
-        $routes = $_db->select('api_routes',
-                ['id','methods', 'route_type', 'content_type', 'db_id', 'content', 'retry', 'retry_delay', 'timeout'],
+        $routes = $_db->select('api_routes', $fields,
                 ['AND'=>['version'=>$_path[0], 'category'=>$_path[1], 'function'=>$_path[2],'environment'=>$env,'enabled'=>1]]
             );
         if(!isset($routes) || !is_array($routes) || count($routes)==0){
-            $routes = $_db->select('api_routes',
-                ['id','methods', 'route_type', 'content_type', 'db_id', 'content', 'retry', 'retry_delay', 'timeout'],
+            $routes = $_db->select('api_routes', $fields,
                 ['AND'=>['version'=>$_path[0], 'category'=>$_path[1],'environment'=>$env,'enabled'=>1]]
             );
             unset($_path[0],$_path[1]);
@@ -94,8 +95,7 @@ if(isset($_path[0]) && $_path[0]==$_admin){
             $_path = array_values($_path);
         }
     }else if(isset($_path[0],$_path[1])){
-        $routes = $_db->select('api_routes',
-                ['id','methods', 'route_type', 'content_type', 'db_id', 'content', 'retry', 'retry_delay', 'timeout'],
+        $routes = $_db->select('api_routes', $fields,
                 ['AND'=>['version'=>$_path[0], 'category'=>$_path[1],'environment'=>$env,'enabled'=>1]]
             );
         unset($_path[0],$_path[1]);
@@ -121,7 +121,19 @@ if(isset($_path[0]) && $_path[0]==$_admin){
     //analytics
     analytics($route['id']);
 
-    //TODO Check AUTH
+    if($route['auth_id']>0){
+        $auth = $_db->get('api_auth',['jwt_secret', 'expired', 'header'],['id'=>$route['auth_id']]);
+        $token = getallheaders()[$auth['header']];
+        if(empty($token)){
+            sendError("Unauthorized",['HTTP/1.0 401 Unauthorized']);
+        }else{
+            try{
+                $decoded = JWT::decode($token, $auth['jwt_secret'], array('HS256'));
+            }catch(Exception $e){
+                sendError("Unauthorized",['HTTP/1.0 401 Unauthorized']);
+            }
+        }
+    }
 
     //find processor based route type
     if(file_exists('processor/'.$route['route_type'].'.php')){
