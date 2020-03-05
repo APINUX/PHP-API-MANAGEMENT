@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="/static/plugins/fontawesome-free/css/all.min.css">
     <!-- Select2 -->
     <link rel="stylesheet" href="/static/plugins/select2/css/select2.min.css">
+    <!-- Pace -->
+    <link rel="stylesheet" href="/static/plugins/select2/css/select2.min.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="/static/css/adminlte.min.css">
     <!-- Google Font: Source Sans Pro -->
@@ -29,7 +31,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse order-3" id="navbarCollapse">
-                <!-- Left navbar links -->
+                <?php if(!empty($_SESSION['EMAIL'])){ ?>
                 <ul class="navbar-nav">
                     <li class="nav-item">
                     <a href="/<?=$crumbs[0]?>/" class="nav-link">Home</a>
@@ -44,9 +46,10 @@
                     if($_path[0]==$module) echo ' active';
                     ?>"><?=ucwords($module)?></a>
                     </li>
-                    <?php }//if
-                    }//foreach ?>
+                        <?php }//if
+                        }//foreach ?>
                 </ul>
+                <?php }//session check?>
             </div>
         </div>
     </nav>
@@ -62,6 +65,7 @@
                     <h1 class="m-0 text-dark"> <?=$this->e($title)?></h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
+                <?php if(!empty($_SESSION['EMAIL'])){ ?>
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="/<?=$crumbs[0]?>/">Home</a></li>
                     <?php
@@ -76,6 +80,7 @@
                         <?php }
                     } ?>
                 </ol>
+                <?php } ?>
                 </div><!-- /.col -->
             </div><!-- /.row -->
             </div><!-- /.container-fluid -->

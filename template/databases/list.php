@@ -10,8 +10,10 @@
                     <a href="/<?=$crumbs[0]?>/<?=$crumbs[1]?>/edit/<?=$db['id']?>" class="btn btn-warning btn-xs float-right">Edit</a></h4>
                 <div class="card-body">
                     <p class="card-text btn-group btn-block">
-                        <a class="btn btn-primary text-white" title="header"><?=$db['db_type']?></a>
-                        <a class="btn btn-info text-white" title="expired"><?=$db['environment']?></a>
+                        <a class="btn btn-dark text-white" title="header"><?=$db['db_type']?></a>
+                        <a class="btn btn-<?php if($db['environment']=='production') echo 'success'; 
+        else if($db['environment']=='staging') echo 'primary'; 
+        else if($db['environment']=='development') echo 'info'; ?> text-white" title="expired"><?=$db['environment']?></a>
                     </p>
                     <small class="form-text text-muted"><?=$db['db_host']?></small><br>
                 </div>

@@ -1,4 +1,4 @@
-<?php $this->layout('template', ['title' => 'JWT Auth '.(($edit)? 'Edit': 'Add')]); ?>
+<?php $this->layout('template', ['title' => 'DB '.(($edit)? 'Edit': 'Add')]); ?>
 
 <form class="form" method="post">
 <div class="row">
@@ -10,25 +10,41 @@
             <div class="card-body">
                 <div class="form-group">
                     <label>Name</label>
-                    <input type="text" name="name" id="name" class="form-control" placeholder="name" value="<?=$data['name']?>">
+                    <input type="text" name="name" required id="name" class="form-control" placeholder="name" value="<?=$data['name']?>">
                 </div>
                 <div class="form-group">
-                    <label>JWT Secret</label>
-                    <input type="text" name="jwt_secret" id="jwt_secret" class="form-control" placeholder="JWT Secret" value="<?=$data['jwt_secret']?>">
+                    <label>Database Type</label>
+                    <select name="environment" id="environment" class="form-control" style="width: 100%;">
+                    <?php foreach($_dbs as $db){
+                        if($db==$data['environment'])
+                        echo '<option value="'.$db.'" selected>'.strtoupper($db).'</option>';
+                        else
+                        echo '<option value="'.$db.'">'.strtoupper($db).'</option>';
+                    }?>
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label>Expired</label>
-                    <div class="input-group mb-3">
-                        <input type="number" name="expired" id="expired" class="form-control" placeholder="expired" value="<?=$data['expired']?>">
-                        <div class="input-group-append">
-                            <span class="input-group-text" id="basic-addon2">hour(s)</span>
-                        </div>
-                    </div>
+                    <label>Database Name</label>
+                    <input type="text" name="db_name" required id="db_name" class="form-control" value="<?=$data['db_name']?>">
                 </div>
                 <div class="form-group">
-                    <label>Header Name</label>
-                    <input type="text" name="header" id="header" class="form-control" placeholder="X-AUTH" value="<?=$data['header']?>">
-                    <small class="form-text text-muted">By default, for every http request type, headers will be sent to another API</small>
+                    <label>Database User</label>
+                    <input type="text" name="db_user" required id="db_user" readonly onfocus="this.removeAttribute('readonly');" class="form-control" value="<?=$data['db_user']?>">
+                </div>
+                <div class="form-group">
+                    <label>Database password</label>
+                    <input type="password" name="db_pass"  autocomplete="off" readonly onfocus="this.removeAttribute('readonly');" required id="db_pass" class="form-control" value="<?=$data['db_pass']?>">
+                </div>
+                <div class="form-group">
+                    <label>Environment</label>
+                    <select name="environment" id="environment" class="form-control" style="width: 100%;">
+                    <?php foreach($_env as $env){
+                        if($env==$data['environment'])
+                        echo '<option value="'.$env.'" selected>'.ucfirst($env).'</option>';
+                        else
+                        echo '<option value="'.$env.'">'.ucfirst($env).'</option>';
+                    }?>
+                    </select>
                 </div>
             </div>
             <div class="card-footer">

@@ -29,11 +29,18 @@ $_jml = count($_path);
 $_admin = 'admin';
 
 if(isset($_path[0]) && $_path[0]==$_admin){
+    session_start();
     $tpl = new League\Plates\Engine('template');
+    if(empty($_SESSION['EMAIL'])){
+        include "modules/login.php";
+    }
     //All Methods
-    $tpl->addData(['_methods' => ['GET','POST','PUT','DELETE','PATCH']]);
-    $tpl->addData(['_types' => ['http','sql','php','plain','echo']]);
-    $tpl->addData(['_env' => ['development','staging','production']]);
+    $tpl->addData([
+                    '_methods' => ['GET','POST','PUT','DELETE','PATCH'],
+                    '_types' => ['http','sql','php','plain','echo'],
+                    '_dbs' => ['mysql', 'mssql', 'oracle', 'pgsql'],
+                    '_env' => ['development','staging','production']
+                ]);
 
     //foo/bar.php
     if(file_exists($modul = "modules/".$_path[1]."/".$_path[2].".php")){

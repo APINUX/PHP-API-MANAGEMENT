@@ -234,7 +234,7 @@ function setType(){
             <div class="col-md-2">
                 <div class="form-group">
                     <label>Timeout*</label>
-                    <input type="text" class="form-control" name="timeout" id="timeout" value="<?=(empty($data['timeout']))?'30':$data['timeout']?>" placeholder="seconds">
+                    <input type="text" class="form-control" name="timeout" id="timeout" value="<?=(empty($data['timeout']))?'5':$data['timeout']?>" placeholder="seconds">
                 </div>
             </div>
             <div class="col-md-2">

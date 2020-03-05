@@ -19,6 +19,9 @@ if(!$url) {
     sendError("You need to pass in a target URL.");
 }
 
+//settimeout
+ini_set('default_socket_timeout',$route['timeout']);
+
 $response = "";
 switch ($_SERVER["REQUEST_METHOD"]) {
 case 'POST':
