@@ -1,4 +1,4 @@
-<?php $this->layout('template', ['title' => 'User'.(($edit)? 'Edit': 'Add')]); ?>
+<?php $this->layout('template', ['title' => 'User '.(($edit)? 'Edit': 'Add')]); ?>
 
 <form class="form" method="post">
 <div class="row">
@@ -10,26 +10,38 @@
             <div class="card-body">
                 <div class="form-group">
                     <label>Name</label>
-                    <input type="text" name="name" id="name" class="form-control" placeholder="name" value="<?=$data['name']?>">
+                    <input type="text" name="name" id="name" required class="form-control" placeholder="name" value="<?=$data['name']?>">
                 </div>
                 <div class="form-group">
-                    <label>JWT Secret</label>
-                    <input type="text" name="jwt_secret" id="jwt_secret" class="form-control" placeholder="JWT Secret" value="<?=$data['jwt_secret']?>">
+                    <label>Email</label>
+                    <input type="text" name="email" id="email" required class="form-control" placeholder="email" value="<?=$data['email']?>">
                 </div>
                 <div class="form-group">
-                    <label>Expired</label>
-                    <div class="input-group mb-3">
-                        <input type="number" name="expired" id="expired" class="form-control" placeholder="expired" value="<?=$data['expired']?>">
-                        <div class="input-group-append">
-                            <span class="input-group-text" id="basic-addon2">hour(s)</span>
-                        </div>
-                    </div>
+                    <label>Role</label>
+                    <select name="role" class="form-control" style="width: 100%;">
+                        <option value="1" <?=($data['role']==1)? 'selected':''; ?>>Superadmin</option>
+                        <option value="2" <?=(!$data['role']==2)? 'selected':''; ?>>Admin</option>
+                        <option value="3" <?=(!$data['role']==3)? 'selected':''; ?>>Developer</option>
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label>Header Name</label>
-                    <input type="text" name="header" id="header" class="form-control" placeholder="X-AUTH" value="<?=$data['header']?>">
-                    <small class="form-text text-muted">By default, for every http request type, headers will be sent to another API</small>
+                    <label>Enable</label>
+                    <select name="enable" class="form-control" style="width: 100%;">
+                        <option value="1" <?=($data['enable'])? 'selected':''; ?>>Enable</option>
+                        <option value="0" <?=(!$data['enable'])? 'selected':''; ?>>Disable</option>
+                    </select>
                 </div>
+                <?php if(!$login_email){ ?>
+                <hr>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" name="pass1" <?= (!$edit) ? 'required':'';?> id="pass1"  autocomplete="off" readonly onfocus="this.removeAttribute('readonly');" class="form-control" placeholder="Password" value="<?=$data['pass1']?>">
+                </div>
+                <div class="form-group">
+                    <label>Repeat Password</label>
+                    <input type="password" name="pass2" <?= (!$edit) ? 'required':'';?> id="pass2"  autocomplete="off" readonly onfocus="this.removeAttribute('readonly');" class="form-control" placeholder="Repeat password" value="<?=$data['pass2']?>">
+                </div>
+                <?php } ?>
             </div>
             <div class="card-footer">
                 <button type="submit" name="save" value="true" class="btn btn-info btn-block">SAVE</button>

@@ -240,7 +240,7 @@ function setType(){
                     <label>Enabled</label>
                     <select name="enabled" class="form-control" style="width: 100%;">
                         <option value="1" <?=($data['enabled'])? 'selected':''; ?>>ON</option>
-                        <option value="0>" <?=(!$data['enabled'])? 'selected':''; ?>>OFF</option>
+                        <option value="0" <?=(!$data['enabled'])? 'selected':''; ?>>OFF</option>
                     </select>
                 </div>
             </div>

@@ -1,19 +1,5 @@
 <?php
 
-//if not admin
-if($_SESSION['ROLE']>2){
-    die($tpl->render("alert",['msg'=>'Unauthorized','msgType'=>'warning',
-                    'url'=>'/'.$crumbs[0].'/'.$crumbs[1]."/".$id]));
-}
-
-if(isset($_POST['delete']) && $_POST['delete']==true){
-    if($_db->delete('api_admin',['id'=>$_path[0]])->rowCount()>0){
-        die($tpl->render("alert",['msg'=>'User Deleted','msgType'=>'success','url'=>'/'.$crumbs[0].'/'.$crumbs[1].'/']));
-    }else{
-        $msg = 'Failed to delete User:<br>'.implode("<br>",$_db->error());
-        $msgType = 'danger';
-    }
-}
 
 if(isset($_POST['save']) && $_POST['save']==true){
     $_POST['name']  = strip_tags($_POST['name']);
@@ -41,16 +27,16 @@ if(isset($_POST['save']) && $_POST['save']==true){
 
     //TODO add to log if exists
 
-    if($_db->update('api_admin',$_POST,['id'=>$_path[0]])->rowCount()>0){
-        $msg .= 'User Saved!';
+    if($_db->update('api_admin',$_POST,['id'=>$_SESSION['UID']])->rowCount()>0){
+        $msg = 'Profile Saved!';
         $msgType = 'success';
     }else{
-        $msg .= 'Failed to Save User:<br>'.implode("<br>",$_db->error());
+        $msg = 'Failed to Save Profile:<br>'.implode("<br>",$_db->error());
         $msgType = 'danger';
     }
 }
 
-$data = $_db->get('api_admin',['id','name', 'email', 'enable','role'],['id'=>$_path[0]]);
+$data = $_db->get('api_admin',['id','name', 'email', 'enable','role'],['id'=>$_SESSION['UID']]);
 
 echo $tpl->render("admin/addEdit",[
     'data' => $data,

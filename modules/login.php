@@ -1,4 +1,11 @@
 <?php
+
+if(isset($_GET['logout'])){
+    session_destroy();
+    die($tpl->render("alert",['msg'=>'Logout success','msgType'=>'success',
+                    'url'=>'/'.((empty($crumbs[0]))?$_path[0]:$crumbs[0])]));
+}
+
 //redirect for failed attempt
 if($_SESSION['FAILED']>4){
     header("location: https://google.com");
@@ -11,8 +18,9 @@ if($_POST['login']==true){
             //3 second will set failed
             ini_set('default_socket_timeout',3);
             if($mbox=@imap_open('{'.$smtp_server.':'.$smtp_port.'/imap/'.$smtp_encryption.'/novalidate-cert}',$_POST['email'],$_POST['password'])){
-                $result = $_db->get('api_admin',['name', 'password', 'email', 'role'],['email'=>$_POST['email']]);
+                $result = $_db->get('api_admin',['id','name', 'password', 'email', 'role'],['email'=>$_POST['email']]);
                 if($result['email']==$_POST['email']){
+                    $_SESSION['UID'] = $result['id'];
                     $_SESSION['EMAIL'] = $result['email'];
                     $_SESSION['ROLE'] = $result['role'];
                     $_SESSION['NAME'] = $result['name'];
@@ -27,8 +35,9 @@ if($_POST['login']==true){
             $msgType = "warning";
         }
     }else{
-        $result = $_db->get('api_admin',['name', 'password', 'email', 'role'],['email'=>$_POST['email']]);
+        $result = $_db->get('api_admin',['id', 'name', 'password', 'email', 'role'],['email'=>$_POST['email']]);
         if(password_verify($_POST['password'],$result['password'])){
+            $_SESSION['UID'] = $result['id'];
             $_SESSION['EMAIL'] = $result['email'];
             $_SESSION['ROLE'] = $result['role'];
             $_SESSION['NAME'] = $result['name'];

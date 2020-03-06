@@ -100,7 +100,7 @@
     <footer class="main-footer">
         <!-- To the right -->
         <div class="float-right d-none d-sm-inline">
-        API Management
+                API Management <?php if(!empty($_SESSION['EMAIL'])){ ?>| <a href="/<?=$crumbs[0]?>/login?logout">Logout</a><?php } ?>
         </div>
         <!-- Default to the left -->
         <strong>Copyright &copy; <?=date('Y')?> <a href="https://ibnux.github.io/" rel="nofollow">@ibnux</a> All rights reserved.
