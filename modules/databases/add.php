@@ -1,5 +1,12 @@
 <?php
 
+//if not admin
+if($_SESSION['ROLE']>2){
+    die($tpl->render("alert",['msg'=>'Unauthorized','msgType'=>'warning',
+                    'url'=>'/'.$crumbs[0].'/'.$crumbs[1]."/".$id]));
+}
+
+
 if(isset($_POST['save']) && $_POST['save']==true){
     $_POST['name'] = strip_tags($_POST['name']);
     $_POST['db_host'] = strip_tags($_POST['db_host']);

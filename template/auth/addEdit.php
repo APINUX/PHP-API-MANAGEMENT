@@ -33,6 +33,7 @@
             </div>
             <div class="card-footer">
                 <button type="submit" name="save" value="true" class="btn btn-info btn-block">SAVE</button>
+                <a href="../" class="btn btn-warning btn-sm float-left">back</a>
             <?php if($edit){?><button type="submit" name="delete" onclick="return confirm('Delete it?')" value="true" class="btn btn-danger btn-xs float-right">delete</button><?php } ?>
             </div>
         </div>

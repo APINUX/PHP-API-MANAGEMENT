@@ -43,7 +43,7 @@ if(count($and)>1){
     $where = $and;
 }
 
-$where['ORDER'] = ['version'=>'DESC'];
+$where['ORDER'] = ['api_routes.name'=>'ASC'];
 $where['LIMIT'] = [$pagenow,$max];
 
 $result = $_db->select('api_routes',['[>]api_groups'=>['group_id'=>'id']],['api_routes.id','group_id','api_groups.name(group_name)','api_routes.name', 'environment', 'version', 'category', 'function', 'methods', 'route_type','enabled'], $where);

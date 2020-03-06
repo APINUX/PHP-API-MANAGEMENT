@@ -1,7 +1,7 @@
 <?php
 
-$auths = $_db->select('api_auth',['id','name', 'expired', 'header'],['ORDER'=>['name'=>'ASC']]);
+$admins = $_db->select('api_admin',['id','name', 'email', 'enable'],['ORDER'=>['name'=>'ASC']]);
 
-echo $tpl->render("auth/list",[
-    'auths'=>$auths
+echo $tpl->render("admin/list",[
+    'admins'=>$admins
 ]);

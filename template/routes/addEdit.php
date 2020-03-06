@@ -1,4 +1,6 @@
 <?php $this->layout('template', ['title' => 'Route '.(($edit)? 'Edit': 'Add'),'footerScript'=>"
+<script src=\"http://js.nicedit.com/nicEdit-latest.js\" type=\"text/javascript\"></script>
+<script type=\"text/javascript\">bkLib.onDomLoaded(new nicEditor().panelInstance('description'));</script>
 
 <script>
 
@@ -82,26 +84,20 @@ function setType(){
 <?php if(!empty($msg)){ showAlert($msg, $msgType); }?>
 
 <form class="form" method="post">
-<div class="row">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-body">
-                <?php if($edit){ ?>
-                    <h4><?=$data['name']?></h4>
-                <?php } ?>
-                <div class="form-group">
-                    <label>API Description</label>
-                    <textarea name="description" id="description" class="form-control" rows="2" placeholder="Description"><?=$data['description']?></textarea>
-                </div>
-            </div>
-        </div>
+<div class="card">
+    <div class="card-body">
+        <?php if($edit){ ?>
+            <h4><?=$data['name']?></h4>
+        <?php } ?>
     </div>
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-body">
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
                 <div class="form-group">
                     <label>Group</label>
-                    <select name="group_id" id="group_id" onchange="buildPath()" class="form-control select2" style="width: 100%;">
+                    <select name="group_id" id="group_id" onchange="buildPath()" class="form-control" style="width: 100%;">
                     <?php if(!empty($data['group_name'])){ ?>
                     <option value="<?=$data['group_id']?>"><?=$data['group_name']?></option>
                     <?php } ?>
@@ -111,6 +107,8 @@ function setType(){
                     }?>
                     </select>
                 </div>
+            </div>
+            <div class="col-md-6">
                 <div class="form-group">
                     <label>Environment</label>
                     <select name="environment" id="environment" class="form-control" style="width: 100%;">
@@ -247,6 +245,7 @@ function setType(){
                 </div>
             </div>
         </div>
+        <small class="form-text text-muted">*HTTP type, in second(s)</small>
         <div class="row">
             <div class="col-md-8">
                 <div class="form-group">
@@ -273,9 +272,17 @@ function setType(){
             <textarea name="content" id="content" class="form-control codepress php" rows="10" placeholder="Content"><?=htmlspecialchars($data['content'])?></textarea>
         </div>
     </div>
+</div>
+<div class="card">
+    <div class="card-body">
+        <div class="form-group">
+            <label>API Description, explain how to use and the result</label>
+            <textarea name="description" id="description" class="form-control" rows="5" placeholder="Description"><?=$data['description']?></textarea>
+        </div>
+    </div>
     <div class="card-footer">
         <button type="submit" name="save" value="true" class="btn btn-info btn-block">SAVE</button>
-        <small class="form-text text-muted">*HTTP type, in second(s)</small>
+                <a href="../" class="btn btn-warning btn-sm float-left">back</a>
     <?php if($edit){?><button type="submit" name="delete" onclick="return confirm('Delete it?')" value="true" class="btn btn-danger btn-xs float-right">delete</button><?php } ?>
     </div>
 </div>

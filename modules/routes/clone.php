@@ -1,5 +1,11 @@
 <?php
 
+//if not admin
+if($_SESSION['ROLE']>2){
+    die($tpl->render("alert",['msg'=>'Unauthorized','msgType'=>'warning',
+                    'url'=>'/'.$crumbs[0].'/'.$crumbs[1]."/".$id]));
+}
+
 
 $data = $_db->get('api_routes',
                 ['group_id', 'name', 'description', 'environment', 'version', 'category', 'function', 'methods', 
