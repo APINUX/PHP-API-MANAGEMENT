@@ -1,14 +1,16 @@
 <?php
 use Medoo\Medoo;
+
 /**
+ * SQL Processor, will execute SQL based your setup
+ *
+ *
  * POST {key1 : valuea, key2:valueb}
  * select from table where field1=':key1' AND field2=':key2'
  * example:
  * POST {key1 : valuea, key2:valueb}
  * select from users where field1='valuea' AND field2='valueb'
  *
- * $route ['id','method', 'route_type', 'content_type', 'db_id', 'content', 'retry', 'retry_delay', 'timeout']
- * ignoring 'content_type','method', 'retry', 'retry_delay', 'timeout'
  */
 
 $dbinfo = $_db->get('api_db',['db_type', 'db_host', 'db_name', 'db_user', 'db_pass'],['id'=>$route['db_id']]);

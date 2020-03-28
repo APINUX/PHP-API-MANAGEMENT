@@ -1,6 +1,6 @@
 
 # PHP API GATEWAY & MANAGEMENT 
-![screenshoot](screenshoot.png)
+![screenshoot](static/img/screenshoot.png)
 
 Web Apps for managing multiple API into 1 gateway
 with simple versioning API
@@ -23,6 +23,9 @@ or creating api from database
 ### Web admin
 `/admin`
 
+# TOPOLOGY
+
+![screenshoot](static/img/topologi.jpg)
 
 # Requirement
 

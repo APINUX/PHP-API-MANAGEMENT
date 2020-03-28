@@ -1,8 +1,6 @@
 <?php
 /**
- * just echo content
- * $route ['id','method', 'route_type', 'content_type', 'content', 'retry', 'retry_delay', 'timeout']
- * ignoring 'method', 'retry', 'retry_delay', 'timeout'
+ * PLAIN Processor, will show content based your setup
  */
 
 header('Content-Type: '.$route['content_type']);

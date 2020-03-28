@@ -1,8 +1,6 @@
 <?php
 /**
- * just echo content
- * $route ['id','method', 'route_type', 'content_type', 'content', 'retry', 'retry_delay', 'timeout']
- * ignoring 'method', 'retry', 'retry_delay', 'timeout'
+ * Echo Processor for testing purpose
  */
 
 header('Content-Type: application/json');
@@ -11,7 +9,8 @@ echo json_encode([
     'HEADER'=>getallheaders(),
     'GET'=>$_GET,
     'POST'=>$_POST,
-    'FILES'=>$_FILES
+    'FILES'=>$_FILES,
+    'RAW'=>file_get_contents('php://input')
 ]);
 
 //remove every upload files

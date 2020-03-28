@@ -1,8 +1,6 @@
 <?php
 /**
- * just eval content
- * $route ['id','method', 'route_type', 'content_type', 'content', 'retry', 'retry_delay', 'timeout']
- * ignoring 'content_type','method', 'retry', 'retry_delay', 'timeout'
+ * PHP Processor will execute PHP Code you provide
  */
 
 header('Content-Type: '.$route['content_type']);

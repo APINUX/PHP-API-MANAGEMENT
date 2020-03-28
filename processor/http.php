@@ -1,10 +1,10 @@
 <?php
 
+
 /**
- * Parsing based route
- * $route ['id','methods', 'route_type', 'content_type', 'content', 'retry', 'retry_delay', 'timeout']
- * ignoring 'content_type', will get from external source
+ * HTTP Processor is the proxy to another API
  */
+
 $url = $route['content'];
 if($_jml>0){
     $path = implode("/",$_path);
