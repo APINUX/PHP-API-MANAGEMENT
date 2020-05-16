@@ -122,10 +122,17 @@ function makePCurl($type, $data, $url) {
 
 function initCurl($url) {
     global $route;
+    // STill need to filter which headers need to exclude
+    $headers = array();
+    foreach (getallheaders() as $key => $val) {
+        if(strpos($val,'multipart/form-data')===false)
+            if(strtolower($key)!='content-length')
+                $headers[] = "$key: $val";
+    }
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, $route['timeout']);
     curl_setopt($ch, CURLOPT_TIMEOUT, $route['timeout']);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, getallheaders());
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
     curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     return $ch;
