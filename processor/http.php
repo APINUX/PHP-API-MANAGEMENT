@@ -22,7 +22,9 @@ if(!$url) {
 //settimeout
 ini_set('default_socket_timeout',$route['timeout']);
 
+$headers = array();
 $response = "";
+
 switch ($_SERVER["REQUEST_METHOD"]) {
 case 'POST':
     $response = makePCurl('POST',getPostData(), $url);
@@ -44,7 +46,13 @@ default:
     return;
 }
 
-header('Content-Type: '.$route['content_type']);
+// If no
+header('Content-Type: '.(!empty($route['content_type'])?$route['content_type']:$headers['content_type']));
+
+// if need redirect, then send it
+if(!empty($headers['redirect_url'])){
+    header("location: ".$headers['redirect_url']);
+}
 
 echo $response;
 
@@ -71,7 +79,7 @@ function getPostData(){
         foreach($_FILES as $k => $v){
             if (function_exists('curl_file_create')) { // php 5.5+
                 $post[$k] = curl_file_create($v['tmp_name'],$v['type'],$v['name']);
-            } else { // 
+            } else { //
                 $post[$k] = "@".realpath($v['tmp_name']);
             }
         }
@@ -80,28 +88,34 @@ function getPostData(){
 }
 
 function makeDeleteRequest($url) {
+    global $headers;
     $ch = initCurl($url);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $response = curl_exec($ch);
     curl_close($ch);
+    $headers = curl_getinfo($ch);
     return $response;
 }
 
 function makeGetRequest($url) {
+    global $headers;
     $ch = initCurl($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $response = curl_exec($ch);
     curl_close($ch);
+    $headers = curl_getinfo($ch);
     return $response;
 }
 
 function makePCurl($type, $data, $url) {
+    global $headers;
     $ch = initCurl($url);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $type);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
     $response = curl_exec($ch);
     curl_close($ch);
+    $headers = curl_getinfo($ch);
     return $response;
 }
 
@@ -113,17 +127,6 @@ function initCurl($url) {
     curl_setopt($ch, CURLOPT_TIMEOUT, $route['timeout']);
     curl_setopt($ch, CURLOPT_HTTPHEADER, getallheaders());
     curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
-    curl_setopt($ch, CURLOPT_HEADERFUNCTION, "handleHeaderLine");
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     return $ch;
-}
-
-/**
- * Return some header to client
- */
-function handleHeaderLine( $curl, $header_line ) {
-    //if redirect, we tell them
-    if(strpos('location',$header_line)!==false)
-        header($header_line);
-    return strlen($header_line);
 }
